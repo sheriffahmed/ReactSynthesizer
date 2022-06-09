@@ -3109,119 +3109,119 @@ function Synthesizer() {
   const func = () => {};
 
   const keyMappings = {
-    'A': {
+    A: {
       id: "C",
       element: document.getElementById("C"),
       note: "C",
       octave: 0,
       pressed: false
     },
-    'W': {
+    W: {
       id: "C#",
       element: document.getElementById("C#"),
       note: "C#",
       octave: 0,
       pressed: false
     },
-    'S': {
+    S: {
       id: "D",
       element: document.getElementById("D"),
       note: "D",
       octave: 0,
       pressed: false
     },
-    'E': {
+    E: {
       id: "D#",
       element: document.getElementById("D#"),
       note: "D#",
       octave: 0,
       pressed: false
     },
-    'D': {
+    D: {
       id: "E",
       element: document.getElementById("E"),
       note: "E",
       octave: 0,
       pressed: false
     },
-    'F': {
+    F: {
       id: "F",
       element: document.getElementById("F"),
       note: "F",
       octave: 0,
       pressed: false
     },
-    'T': {
+    T: {
       id: "F#",
       element: document.getElementById("F#"),
       note: "F#",
       octave: 0,
       pressed: false
     },
-    'G': {
+    G: {
       id: "G",
       element: document.getElementById("G"),
       note: "G",
       octave: 0,
       pressed: false
     },
-    'Y': {
+    Y: {
       id: "G#",
       element: document.getElementById("G#"),
       note: "G#",
       octave: 0,
       pressed: false
     },
-    'H': {
+    H: {
       id: "A",
       element: document.getElementById("A"),
       note: "A",
       octave: 0,
       pressed: false
     },
-    'U': {
+    U: {
       id: "A#",
       element: document.getElementById("A#"),
       note: "A#",
       octave: 0,
       pressed: false
     },
-    'J': {
+    J: {
       id: "B",
       element: document.getElementById("B"),
       note: "B",
       octave: 0,
       pressed: false
     },
-    'K': {
+    K: {
       id: "C2",
       element: document.getElementById("C2"),
       note: "C",
       octave: 1,
       pressed: false
     },
-    'O': {
+    O: {
       id: "C#2",
       element: document.getElementById("C#2"),
       note: "C#",
       octave: 1,
       pressed: false
     },
-    'L': {
+    L: {
       id: "D2",
       element: document.getElementById("D2"),
       note: "D",
       octave: 1,
       pressed: false
     },
-    'P': {
+    P: {
       id: "D#2",
       element: document.getElementById("D#2"),
       note: "D#",
       octave: 1,
       pressed: false
     },
-    ';': {
+    ";": {
       id: "E2",
       element: document.getElementById("E2"),
       note: "E",
@@ -3229,32 +3229,47 @@ function Synthesizer() {
       pressed: false
     }
   };
-  const synth = new tone__WEBPACK_IMPORTED_MODULE_1__.PolySynth(tone__WEBPACK_IMPORTED_MODULE_1__.Synth).toDestination(); // States
+  let synth = new tone__WEBPACK_IMPORTED_MODULE_1__.PolySynth(tone__WEBPACK_IMPORTED_MODULE_1__.Synth).toDestination(); // synth.debug = true
+  // States
 
   const [noteProps, setNoteProps] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(keyMappings);
   const [pressedKeys, setPressedKeys] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
-  const [octave, setOctave] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(startingOctave); // Handlers
+  const [octave, setOctave] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(startingOctave);
+  const [buttonAni, setButtonAni] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false); // Handlers
+  //   const buttonBubbles =() =>{
+  //     // e.preventDefault;
+  //     // setButtonAni(prevState=> false)
+  //   // e.target.classList.remove('animate');
+  //   setButtonAni(prevState=> true)
+  //   // e.target.classList.add('animate');
+  //   // setTimeout(function(){
+  //   //   // e.target.classList.remove('animate');
+  //   //   setButtonAni(prevState=> false)
+  //   // },700);
+  // }
 
   const increaseOctave = () => {
     if (octave < startingOctave + 2) {
+      // buttonBubbles()
       setOctave(prevState => prevState + 1);
     }
   };
 
   const decreaseOctave = () => {
     if (octave > startingOctave - 2) {
+      // buttonBubbles()
       setOctave(prevState => prevState - 1);
     }
-  }; // onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[String(key).toUpperCase()].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[String(key).toUpperCase()].pressed = false; return newState })}
+  };
 
-
-  const downHandler = ({
+  const downHandler = async ({
     key
   }) => {
     const keyPress = String(key).toUpperCase();
 
     if (noteProps[keyPress]) {
       if (!noteProps[keyPress].pressed) {
+        await tone__WEBPACK_IMPORTED_MODULE_1__.start();
         synth.triggerAttackRelease(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`, "8n");
         setNoteProps(prevState => {
           let newState = { ...prevState
@@ -3262,13 +3277,11 @@ function Synthesizer() {
           newState[keyPress].pressed = true;
           return newState;
         });
-        console.log(octave);
-        console.log(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`);
       }
     }
   };
 
-  const upHandler = ({
+  const upHandler = async ({
     key
   }) => {
     const keyPress = String(key).toUpperCase();
@@ -3279,7 +3292,7 @@ function Synthesizer() {
         };
         newState[keyPress].pressed = false;
         return newState;
-      }); // synth.triggerAttackRelease(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`, "8n")
+      });
     }
   };
 
@@ -3309,24 +3322,35 @@ function Synthesizer() {
     return () => {
       window.removeEventListener("keydown", downHandler);
       window.removeEventListener("keyup", upHandler);
+      synth = new tone__WEBPACK_IMPORTED_MODULE_1__.PolySynth(tone__WEBPACK_IMPORTED_MODULE_1__.Synth).toDestination();
+      setTimeout(function () {
+        // e.target.classList.remove('animate');
+        setButtonAni(prevState => false);
+      }, 700);
     };
-  }, []); // Empty array ensures that effect is only run on mount and unmount
+  }, [octave, buttonAni]); // Component will update when octave state changes
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, "Synthesizer", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
     onClick: () => synth.triggerAttackRelease(`C${octave}`, "8n")
   }, " ", "C"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
-    onClick: increaseOctave
-  }, " +1 Octave"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
-    onClick: decreaseOctave
-  }, " -1 Octave"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
-    onClick: () => setOctave(startingOctave)
-  }, " Reset Octave"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: buttonAni ? `button-glow animate` : `button-glow`,
+    onClick: () => increaseOctave()
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), "+1 Octave"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+    className: buttonAni ? `button-glow animate` : `button-glow`,
+    onClick: () => decreaseOctave()
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), "-1 Octave"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+    className: buttonAni ? `button-glow animate` : `button-glow`,
+    onClick: () => {
+      buttonBubbles();
+      setOctave(startingOctave);
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), "Reset Octave"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     style: {
       margin: 0,
-      position: 'absolute',
-      top: ' 50%',
-      transform: 'translateY(-50%)',
-      left: '40%'
+      position: "absolute",
+      top: " 50%",
+      transform: "translateY(-50%)",
+      left: "40%"
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("ul", {
     id: "keyboard"

@@ -2614,8 +2614,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_HookCcounterThree__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/HookCcounterThree */ "./client/components/HookCcounterThree.js");
 /* harmony import */ var _components_HookCounterFour__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/HookCounterFour */ "./client/components/HookCounterFour.js");
 /* harmony import */ var _components_Navbar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/Navbar */ "./client/components/Navbar.js");
-/* harmony import */ var _components_Synthesizer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/Synthesizer */ "./client/components/Synthesizer.js");
-/* harmony import */ var _Routes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Routes */ "./client/Routes.js");
+/* harmony import */ var _components_Stars__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/Stars */ "./client/components/Stars.js");
+/* harmony import */ var _components_Synthesizer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/Synthesizer */ "./client/components/Synthesizer.js");
+/* harmony import */ var _Routes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Routes */ "./client/Routes.js");
+
 
 
 
@@ -2624,7 +2626,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const App = () => {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_Navbar__WEBPACK_IMPORTED_MODULE_3__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_Synthesizer__WEBPACK_IMPORTED_MODULE_4__["default"], null));
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_Stars__WEBPACK_IMPORTED_MODULE_4__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_Synthesizer__WEBPACK_IMPORTED_MODULE_5__["default"], null));
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
@@ -3014,6 +3016,76 @@ const mapDispatch = dispatch => {
 
 /***/ }),
 
+/***/ "./client/components/Stars.js":
+/*!************************************!*\
+  !*** ./client/components/Stars.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+
+function Stars() {
+  const starsStyling = {
+    animation: `twinkle ${Math.random() * 5 + 5}s linear ${Math.random() * 5 + 5}s infinite`,
+    top: `${Math.random() * window.innerHeight}px`,
+    left: `${Math.random() * window.innerWidth}px`
+  };
+  const [bgStars, setBgStars] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
+
+  const loadStars = () => {
+    // let starsArr= []
+    console.log(window);
+
+    for (let i = 0; i < 200; i++) {
+      // let star =
+      // stars.push({className: "star"})
+      setBgStars(prevState => [...prevState, {
+        class: "star",
+        style: {
+          animation: `twinkle ${~~(Math.random() * 5 + (i === 100 ? 1 : 3))}s linear ${~~(Math.random() * 5 + (i === 100 ? 1 : 3))}s infinite`,
+          top: `${Math.random() * window.screen.availHeight}px`,
+          left: `${Math.random() * window.screen.availWidth}px`
+        }
+      }]); // className="star"></div>
+      // document.body.append(star);
+      // return stars
+    }
+  };
+
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    loadStars();
+  }, []);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "bg-stars"
+  }, bgStars.map((star, id) => {
+    // star.style = starsStyling
+    console.log(window);
+    console.log(document); // animation: `twinkle ${(~~(Math.random() * 5) + 5)}s linear ${(~~(Math.random() * 5) + 5)}s infinite`,
+
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+      key: id,
+      className: star.class,
+      style: star.style // return <div key={id} className="star" style={
+      // {
+      //   animation: `twinkle ${1}s linear ${1}s infinite`,
+      //   top: `${Math.random() * window.screen.availHeight}px`,
+      //   left: `${Math.random() * window.screen.availWidth}px`
+      // }
+
+    });
+  }));
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Stars);
+
+/***/ }),
+
 /***/ "./client/components/Synthesizer.js":
 /*!******************************************!*\
   !*** ./client/components/Synthesizer.js ***!
@@ -3182,15 +3254,17 @@ function Synthesizer() {
     const keyPress = String(key).toUpperCase();
 
     if (noteProps[keyPress]) {
-      setNoteProps(prevState => {
-        let newState = { ...prevState
-        };
-        newState[keyPress].pressed = true;
-        return newState;
-      });
-      console.log(octave);
-      console.log(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`);
-      synth.triggerAttackRelease(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`, "8n");
+      if (!noteProps[keyPress].pressed) {
+        synth.triggerAttackRelease(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[keyPress].pressed = true;
+          return newState;
+        });
+        console.log(octave);
+        console.log(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`);
+      }
     }
   };
 
@@ -3240,338 +3314,413 @@ function Synthesizer() {
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, "Synthesizer", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
     onClick: () => synth.triggerAttackRelease(`C${octave}`, "8n")
-  }, " C"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+  }, " ", "C"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
     onClick: increaseOctave
   }, " +1 Octave"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
     onClick: decreaseOctave
   }, " -1 Octave"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
     onClick: () => setOctave(startingOctave)
-  }, " Reset Octave"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("ul", {
+  }, " Reset Octave"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    style: {
+      margin: 0,
+      position: 'absolute',
+      top: ' 50%',
+      transform: 'translateY(-50%)',
+      left: '40%'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("ul", {
     id: "keyboard"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "C",
-    className: ` ${noteProps[`A`]['pressed'] ? "white pressed" : "white"}`,
+    className: ` ${noteProps[`A`]["pressed"] ? "white pressed" : "white"}`,
     "data-key": `A`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`A`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`A`]["pressed"]) {
+        synth.triggerAttackRelease(`C${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`A`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`A`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`C${octave}`, "8n");
-    }
+    onClick: () => {}
   }, "A"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "C#",
-    className: `${noteProps[`W`]['pressed'] ? "black pressed" : "black"}`,
+    className: `${noteProps[`W`]["pressed"] ? "black pressed" : "black"}`,
     "data-key": `W`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`W`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`W`]["pressed"]) {
+        synth.triggerAttackRelease(`C#${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`W`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`W`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`C#${octave}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`C#${octave}`, "8n");
     }
   }, "W"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "D",
-    className: `${noteProps[`S`]['pressed'] ? "white offset pressed" : "white offset"}`,
+    className: `${noteProps[`S`]["pressed"] ? "white offset pressed" : "white offset"}`,
     "data-key": `S`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`S`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`S`]["pressed"]) {
+        synth.triggerAttackRelease(`D${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`S`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`S`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`D${octave}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`D${octave}`, "8n");
     }
   }, "S"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "D#",
-    className: `${noteProps[`E`]['pressed'] ? "black pressed" : "black"}`,
+    className: `${noteProps[`E`]["pressed"] ? "black pressed" : "black"}`,
     "data-key": `E`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`E`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`E`]["pressed"]) {
+        synth.triggerAttackRelease(`D#${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`E`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`E`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`D#${octave}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`D#${octave}`, "8n");
     }
   }, "E"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "E",
-    className: `${noteProps[`D`]['pressed'] ? "white offset pressed" : "white offset"}`,
+    className: `${noteProps[`D`]["pressed"] ? "white offset pressed" : "white offset"}`,
     "data-key": `D`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`D`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`D`]["pressed"]) {
+        synth.triggerAttackRelease(`E${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`D`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`D`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`E${octave}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`E${octave}`, "8n");
     }
   }, "D"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "F",
-    className: ` ${noteProps[`F`]['pressed'] ? "white pressed" : "white"}`,
+    className: ` ${noteProps[`F`]["pressed"] ? "white pressed" : "white"}`,
     "data-key": `F`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`F`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`F`]["pressed"]) {
+        synth.triggerAttackRelease(`F${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`F`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`F`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`F${octave}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`F${octave}`, "8n");
     }
   }, "F"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "F#",
-    className: `${noteProps[`T`]['pressed'] ? "black pressed" : "black"}`,
+    className: `${noteProps[`T`]["pressed"] ? "black pressed" : "black"}`,
     "data-key": `T`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`T`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`T`]["pressed"]) {
+        synth.triggerAttackRelease(`F#${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`T`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`T`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`F#${octave}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`F#${octave}`, "8n");
     }
   }, "T"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "G",
-    className: `${noteProps[`G`]['pressed'] ? "white offset pressed" : "white offset"}`,
+    className: `${noteProps[`G`]["pressed"] ? "white offset pressed" : "white offset"}`,
     "data-key": `G`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`G`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`G`]["pressed"]) {
+        synth.triggerAttackRelease(`G${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`G`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`G`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`G${octave}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`G${octave}`, "8n");
     }
   }, "G"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "G#",
-    className: `${noteProps[`Y`]['pressed'] ? "black pressed" : "black"}`,
+    className: `${noteProps[`Y`]["pressed"] ? "black pressed" : "black"}`,
     "data-key": `Y`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`Y`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`Y`]["pressed"]) {
+        synth.triggerAttackRelease(`G#${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`Y`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`Y`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`G#${octave}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`G#${octave}`, "8n");
     }
   }, "Y"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "A",
-    className: `${noteProps[`H`]['pressed'] ? "white offset pressed" : "white offset"}`,
+    className: `${noteProps[`H`]["pressed"] ? "white offset pressed" : "white offset"}`,
     "data-key": `H`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`H`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`H`]["pressed"]) {
+        synth.triggerAttackRelease(`A${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`H`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`H`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`A${octave}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`A${octave}`, "8n");
     }
   }, "H"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "A#",
-    className: `${noteProps[`U`]['pressed'] ? "black pressed" : "black"}`,
+    className: `${noteProps[`U`]["pressed"] ? "black pressed" : "black"}`,
     "data-key": `U`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`U`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`U`]["pressed"]) {
+        synth.triggerAttackRelease(`A#${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`U`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`U`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`A#${octave}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`A#${octave}`, "8n");
     }
   }, "U"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "B",
-    className: `${noteProps[`J`]['pressed'] ? "white offset pressed" : "white offset"}`,
+    className: `${noteProps[`J`]["pressed"] ? "white offset pressed" : "white offset"}`,
     "data-key": `J`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`J`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`J`]["pressed"]) {
+        synth.triggerAttackRelease(`B${octave}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`J`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`J`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`B${octave}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`B${octave}`, "8n");
     }
   }, "J"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "C2",
-    className: ` ${noteProps[`K`]['pressed'] ? "white pressed" : "white"}`,
+    className: ` ${noteProps[`K`]["pressed"] ? "white pressed" : "white"}`,
     "data-key": `K`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`K`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`K`]["pressed"]) {
+        synth.triggerAttackRelease(`C${octave + 1}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`K`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`K`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`C${octave + 1}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`C${octave + 1}`, "8n");
     }
   }, "K"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "C#2",
-    className: `${noteProps[`O`]['pressed'] ? "black pressed" : "black"}`,
+    className: `${noteProps[`O`]["pressed"] ? "black pressed" : "black"}`,
     "data-key": `O`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`O`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`O`]["pressed"]) {
+        synth.triggerAttackRelease(`C#${octave + 1}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`O`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`O`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`C#${octave + 1}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`C#${octave + 1}`, "8n");
     }
   }, "O"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "D2",
-    className: `${noteProps[`L`]['pressed'] ? "white offset pressed" : "white offset"}`,
+    className: `${noteProps[`L`]["pressed"] ? "white offset pressed" : "white offset"}`,
     "data-key": `L`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`L`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`L`]["pressed"]) {
+        synth.triggerAttackRelease(`D${octave + 1}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`L`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`L`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`D${octave + 1}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`D${octave + 1}`, "8n");
     }
   }, "L"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "D#2",
-    className: `${noteProps[`P`]['pressed'] ? "black pressed" : "black"}`,
+    className: `${noteProps[`P`]["pressed"] ? "black pressed" : "black"}`,
     "data-key": `P`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`P`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`P`]["pressed"]) {
+        synth.triggerAttackRelease(`D#${octave + 1}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`P`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`P`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`D#${octave + 1}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`D#${octave + 1}`, "8n");
     }
   }, "P"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "E2",
-    className: `${noteProps[`;`]['pressed'] ? "white offset pressed" : "white offset"}`,
+    className: `${noteProps[`;`]["pressed"] ? "white offset pressed" : "white offset"}`,
     "data-key": `;`,
-    onMouseDown: () => setNoteProps(prevState => {
-      let newState = { ...prevState
-      };
-      newState[`;`].pressed = true;
-      return newState;
-    }),
+    onMouseDown: () => {
+      if (!noteProps[`;`]["pressed"]) {
+        synth.triggerAttackRelease(`E${octave + 1}`, "8n");
+        setNoteProps(prevState => {
+          let newState = { ...prevState
+          };
+          newState[`;`].pressed = true;
+          return newState;
+        });
+      }
+    },
     onMouseUp: () => setNoteProps(prevState => {
       let newState = { ...prevState
       };
       newState[`;`].pressed = false;
       return newState;
     }),
-    onClick: () => {
-      synth.triggerAttackRelease(`E${octave + 1}`, "8n");
+    onClick: () => {// synth.triggerAttackRelease(`E${octave + 1}`, "8n");
     }
-  }, ";")));
+  }, ";"))));
 }
 
 /***/ }),

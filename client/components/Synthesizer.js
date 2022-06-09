@@ -50,14 +50,16 @@ const decreaseOctave = () =>{
 const downHandler = ( {key} ) => {
 const keyPress = String(key).toUpperCase()
 if(noteProps[keyPress]){
-  setNoteProps(prevState=> {
-    let newState = {...prevState}
-    newState[keyPress].pressed = true
-    return newState
-  })
-  console.log(octave)
-console.log(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`)
-  synth.triggerAttackRelease(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`, "8n")
+  if(!noteProps[keyPress].pressed){
+    synth.triggerAttackRelease(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`, "8n")
+    setNoteProps(prevState=> {
+      let newState = {...prevState}
+      newState[keyPress].pressed = true
+      return newState
+    })
+    console.log(octave)
+    console.log(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`)
+  }
 }
 }
 const upHandler = ({key}) => {
@@ -103,30 +105,534 @@ useEffect(() => {
   return (
     <div>
       Synthesizer
-      <button onClick={() => synth.triggerAttackRelease(`C${octave}`, "8n")} > C</button>
+      <button onClick={() => synth.triggerAttackRelease(`C${octave}`, "8n")}>
+        {" "}
+        C
+      </button>
       <button onClick={increaseOctave}> +1 Octave</button>
       <button onClick={decreaseOctave}> -1 Octave</button>
       <button onClick={() => setOctave(startingOctave)}> Reset Octave</button>
-
+      <div style={{margin: 0,
+  position: 'absolute',
+  top:' 50%',
+  transform: 'translateY(-50%)',
+  left: '40%'
+  }}>
       <ul id="keyboard">
-  <li id="C" className={` ${noteProps[`A`]['pressed'] ? "white pressed": "white" }`}data-key={`A`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`A`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`A`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`C${octave}`, "8n")}}>A</li>
-  <li id="C#" className={`${noteProps[`W`]['pressed'] ? "black pressed": "black" }`}data-key={`W`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`W`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`W`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`C#${octave}`, "8n")}}>W</li>
-  <li id="D" className={`${noteProps[`S`]['pressed'] ? "white offset pressed": "white offset"}`} data-key={`S`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`S`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`S`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`D${octave}`, "8n")}}>S</li>
-  <li id="D#" className={`${noteProps[`E`]['pressed'] ? "black pressed": "black" }`}data-key={`E`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`E`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`E`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`D#${octave}`, "8n")}}>E</li>
-  <li id="E" className={`${noteProps[`D`]['pressed'] ? "white offset pressed": "white offset"}`} data-key={`D`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`D`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`D`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`E${octave}`, "8n")}}>D</li>
-  <li id="F" className={` ${noteProps[`F`]['pressed'] ? "white pressed": "white" }`}data-key={`F`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`F`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`F`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`F${octave}`, "8n")}}>F</li>
-  <li id="F#" className={`${noteProps[`T`]['pressed'] ? "black pressed": "black" }`}data-key={`T`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`T`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`T`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`F#${octave}`, "8n")}}>T</li>
-  <li id="G" className={`${noteProps[`G`]['pressed'] ? "white offset pressed": "white offset"}`} data-key={`G`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`G`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`G`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`G${octave}`, "8n")}}>G</li>
-  <li id="G#" className={`${noteProps[`Y`]['pressed'] ? "black pressed": "black" }`}data-key={`Y`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`Y`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`Y`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`G#${octave}`, "8n")}}>Y</li>
-  <li id="A" className={`${noteProps[`H`]['pressed'] ? "white offset pressed": "white offset"}`} data-key={`H`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`H`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`H`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`A${octave}`, "8n")}}>H</li>
-  <li id="A#" className={`${noteProps[`U`]['pressed'] ? "black pressed": "black" }`}data-key={`U`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`U`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`U`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`A#${octave}`, "8n")}}>U</li>
-  <li id="B" className={`${noteProps[`J`]['pressed'] ? "white offset pressed": "white offset"}`} data-key={`J`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`J`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`J`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`B${octave}`, "8n")}}>J</li>
-  <li id="C2" className={` ${noteProps[`K`]['pressed'] ? "white pressed": "white" }`}data-key={`K`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`K`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`K`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`C${octave + 1}`, "8n")}}>K</li>
-  <li id="C#2" className={`${noteProps[`O`]['pressed'] ? "black pressed": "black" }`}data-key={`O`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`O`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`O`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`C#${octave + 1}`, "8n")}}>O</li>
-  <li id="D2" className={`${noteProps[`L`]['pressed'] ? "white offset pressed": "white offset"}`} data-key={`L`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`L`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`L`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`D${octave + 1}`, "8n")}}>L</li>
-  <li id="D#2" className={`${noteProps[`P`]['pressed'] ? "black pressed": "black" }`}data-key={`P`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`P`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`P`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`D#${octave + 1}`, "8n")}}>P</li>
-  <li id="E2" className={`${noteProps[`;`]['pressed'] ? "white offset pressed": "white offset"}`} data-key={`;`} onMouseDown={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`;`].pressed = true; return newState })} onMouseUp={()=> setNoteProps(prevState =>{let newState = {...prevState}; newState[`;`].pressed = false; return newState })} onClick={()=> {synth.triggerAttackRelease(`E${octave + 1}`, "8n")}}>;</li>
-</ul>
-      </div>
-  )
+        <li
+          id="C"
+          className={` ${
+            noteProps[`A`]["pressed"] ? "white pressed" : "white"
+          }`}
+          data-key={`A`}
+          onMouseDown={() =>{
+            if(!noteProps[`A`]["pressed"]){
+              synth.triggerAttackRelease(`C${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`A`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`A`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+          }}
+        >
+          A
+        </li>
+        <li
+          id="C#"
+          className={`${noteProps[`W`]["pressed"] ? "black pressed" : "black"}`}
+          data-key={`W`}
+          onMouseDown={() =>{
+            if(!noteProps[`W`]["pressed"]){
+            synth.triggerAttackRelease(`C#${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`W`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`W`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`C#${octave}`, "8n");
+          }}
+        >
+          W
+        </li>
+        <li
+          id="D"
+          className={`${
+            noteProps[`S`]["pressed"] ? "white offset pressed" : "white offset"
+          }`}
+          data-key={`S`}
+          onMouseDown={() =>{
+            if(!noteProps[`S`]["pressed"]){
+            synth.triggerAttackRelease(`D${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`S`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`S`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`D${octave}`, "8n");
+          }}
+        >
+          S
+        </li>
+        <li
+          id="D#"
+          className={`${noteProps[`E`]["pressed"] ? "black pressed" : "black"}`}
+          data-key={`E`}
+          onMouseDown={() =>{
+            if(!noteProps[`E`]["pressed"]){
+            synth.triggerAttackRelease(`D#${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`E`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`E`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`D#${octave}`, "8n");
+          }}
+        >
+          E
+        </li>
+        <li
+          id="E"
+          className={`${
+            noteProps[`D`]["pressed"] ? "white offset pressed" : "white offset"
+          }`}
+          data-key={`D`}
+          onMouseDown={() =>{
+            if(!noteProps[`D`]["pressed"]){
+            synth.triggerAttackRelease(`E${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`D`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`D`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`E${octave}`, "8n");
+          }}
+        >
+          D
+        </li>
+        <li
+          id="F"
+          className={` ${
+            noteProps[`F`]["pressed"] ? "white pressed" : "white"
+          }`}
+          data-key={`F`}
+          onMouseDown={() =>{
+            if(!noteProps[`F`]["pressed"]){
+            synth.triggerAttackRelease(`F${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`F`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`F`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`F${octave}`, "8n");
+          }}
+        >
+          F
+        </li>
+        <li
+          id="F#"
+          className={`${noteProps[`T`]["pressed"] ? "black pressed" : "black"}`}
+          data-key={`T`}
+          onMouseDown={() =>{
+            if(!noteProps[`T`]["pressed"]){
+            synth.triggerAttackRelease(`F#${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`T`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`T`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`F#${octave}`, "8n");
+          }}
+        >
+          T
+        </li>
+        <li
+          id="G"
+          className={`${
+            noteProps[`G`]["pressed"] ? "white offset pressed" : "white offset"
+          }`}
+          data-key={`G`}
+          onMouseDown={() =>{
+            if(!noteProps[`G`]["pressed"]){
+            synth.triggerAttackRelease(`G${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`G`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`G`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`G${octave}`, "8n");
+          }}
+        >
+          G
+        </li>
+        <li
+          id="G#"
+          className={`${noteProps[`Y`]["pressed"] ? "black pressed" : "black"}`}
+          data-key={`Y`}
+          onMouseDown={() =>{
+            if(!noteProps[`Y`]["pressed"]){
+            synth.triggerAttackRelease(`G#${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`Y`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`Y`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`G#${octave}`, "8n");
+          }}
+        >
+          Y
+        </li>
+        <li
+          id="A"
+          className={`${
+            noteProps[`H`]["pressed"] ? "white offset pressed" : "white offset"
+          }`}
+          data-key={`H`}
+          onMouseDown={() =>{
+            if(!noteProps[`H`]["pressed"]){
+            synth.triggerAttackRelease(`A${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`H`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`H`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`A${octave}`, "8n");
+          }}
+        >
+          H
+        </li>
+        <li
+          id="A#"
+          className={`${noteProps[`U`]["pressed"] ? "black pressed" : "black"}`}
+          data-key={`U`}
+          onMouseDown={() =>{
+            if(!noteProps[`U`]["pressed"]){
+            synth.triggerAttackRelease(`A#${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`U`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`U`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`A#${octave}`, "8n");
+          }}
+        >
+          U
+        </li>
+        <li
+          id="B"
+          className={`${
+            noteProps[`J`]["pressed"] ? "white offset pressed" : "white offset"
+          }`}
+          data-key={`J`}
+          onMouseDown={() =>{
+            if(!noteProps[`J`]["pressed"]){
+            synth.triggerAttackRelease(`B${octave}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`J`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`J`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`B${octave}`, "8n");
+          }}
+        >
+          J
+        </li>
+        <li
+          id="C2"
+          className={` ${
+            noteProps[`K`]["pressed"] ? "white pressed" : "white"
+          }`}
+          data-key={`K`}
+          onMouseDown={() =>{
+            if(!noteProps[`K`]["pressed"]){
+            synth.triggerAttackRelease(`C${octave + 1}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`K`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`K`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`C${octave + 1}`, "8n");
+          }}
+        >
+          K
+        </li>
+        <li
+          id="C#2"
+          className={`${noteProps[`O`]["pressed"] ? "black pressed" : "black"}`}
+          data-key={`O`}
+          onMouseDown={() =>{
+            if(!noteProps[`O`]["pressed"]){
+            synth.triggerAttackRelease(`C#${octave + 1}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`O`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`O`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`C#${octave + 1}`, "8n");
+          }}
+        >
+          O
+        </li>
+        <li
+          id="D2"
+          className={`${
+            noteProps[`L`]["pressed"] ? "white offset pressed" : "white offset"
+          }`}
+          data-key={`L`}
+          onMouseDown={() =>{
+            if(!noteProps[`L`]["pressed"]){
+            synth.triggerAttackRelease(`D${octave + 1}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`L`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`L`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`D${octave + 1}`, "8n");
+          }}
+        >
+          L
+        </li>
+        <li
+          id="D#2"
+          className={`${noteProps[`P`]["pressed"] ? "black pressed" : "black"}`}
+          data-key={`P`}
+          onMouseDown={() =>{
+            if(!noteProps[`P`]["pressed"]){
+            synth.triggerAttackRelease(`D#${octave + 1}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`P`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`P`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`D#${octave + 1}`, "8n");
+          }}
+        >
+          P
+        </li>
+        <li
+          id="E2"
+          className={`${
+            noteProps[`;`]["pressed"] ? "white offset pressed" : "white offset"
+          }`}
+          data-key={`;`}
+          onMouseDown={() =>{
+            if(!noteProps[`;`]["pressed"]){
+            synth.triggerAttackRelease(`E${octave + 1}`, "8n");
+
+              setNoteProps((prevState) => {
+                let newState = { ...prevState };
+                newState[`;`].pressed = true;
+                return newState;
+              })
+            }
+          }
+          }
+          onMouseUp={() =>
+            setNoteProps((prevState) => {
+              let newState = { ...prevState };
+              newState[`;`].pressed = false;
+              return newState;
+            })
+          }
+          onClick={() => {
+            // synth.triggerAttackRelease(`E${octave + 1}`, "8n");
+          }}
+        >
+          ;
+        </li>
+      </ul>
+        </div>
+    </div>
+  );
 }

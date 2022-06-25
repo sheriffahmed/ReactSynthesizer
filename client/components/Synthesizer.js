@@ -127,13 +127,47 @@ function Synthesizer() {
       pressed: false,
     },
   };
+    // States
+    const [noteProps, setNoteProps] = useState(keyMappings);
+    const [pressedKeys, setPressedKeys] = useState({});
+    const [octave, setOctave] = useState(startingOctave);
+    const [buttonAni, setButtonAni] = useState(false);
+    const [volume,setVolume] = useState("0.5")
+
+  let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+let oscList = [];
+let mainGainNode = audioContext.createGain();
+  mainGainNode.connect(audioContext.destination);
+  mainGainNode.gain.value = volume
+let noteFreq = [];
+let customWaveform = null;
+let sineTerms = null;
+let cosineTerms = null;
+const createNoteTable = () =>{
+  // let noteFreq = [];
+  for (let i=0; i< 8; i++) {
+    noteFreq[i] = [];
+    noteFreq[i]["C"] = i=== 0 ?  32.703195662574829 : noteFreq[i-1]["C"] * 2
+    noteFreq[i]["C#"] = i=== 0 ?  34.647828872109012 : noteFreq[i-1]["C#"] * 2
+    noteFreq[i]["D"] = i=== 0 ?  36.708095989675945 : noteFreq[i-1]["D"] * 2
+    noteFreq[i]["D#"] = i=== 0 ?  38.890872965260113 : noteFreq[i-1]["D#"] * 2
+    noteFreq[i]["E"] = i=== 0 ?  41.203444614108741 : noteFreq[i-1]["E"] * 2
+    noteFreq[i]["F"] = i=== 0 ?  43.653528929125485 : noteFreq[i-1]["F"] * 2
+    noteFreq[i]["F#"] = i=== 0 ?  46.249302838954299 : noteFreq[i-1]["F#"] * 2
+    noteFreq[i]["G"] = i=== 0 ?  48.999429497718661 : noteFreq[i-1]["G"] * 2
+    noteFreq[i]["G#"] = i=== 0 ?  51.913087197493142 : noteFreq[i-1]["G#"] * 2
+    noteFreq[i]["A"] = i=== 0 ?  55.000000000000000 : noteFreq[i-1]["A"] * 2
+    noteFreq[i]["A#"] = i=== 0 ?  58.270470189761239 : noteFreq[i-1]["A#"] * 2
+    noteFreq[i]["B"] = i=== 0 ?  61.735412657015513 : noteFreq[i-1]["B"] * 2
+
+  }
+  return noteFreq
+
+}
+
   let synth = new Tone.PolySynth(Tone.Synth).toDestination();
   // synth.debug = true
-  // States
-  const [noteProps, setNoteProps] = useState(keyMappings);
-  const [pressedKeys, setPressedKeys] = useState({});
-  const [octave, setOctave] = useState(startingOctave);
-  const [buttonAni, setButtonAni] = useState(false);
+
 
   // Handlers
   //   const buttonBubbles =() =>{
@@ -171,7 +205,7 @@ function Synthesizer() {
         await Tone.start();
         synth.triggerAttackRelease(
           `${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`,
-          "8n"
+          "8n", '+0.05', 0.4
         );
         setNoteProps((prevState) => {
           let newState = { ...prevState };
@@ -191,6 +225,13 @@ function Synthesizer() {
       });
     }
   };
+
+  const changeVolume = (e) =>{
+    e.persist()
+    console.log(e.target)
+    setVolume(prevState => e.target.value)
+  // mainGainNode.gain.value = volume
+  }
   const pressedNotes = new Map();
   let clickedKey = "";
   const playKey = (key) => {
@@ -229,6 +270,7 @@ function Synthesizer() {
       <br />
       <br />
       <br /> */}
+      {console.log(createNoteTable())}
       <button onClick={() => synth.triggerAttackRelease(`C${octave}`, "8n")}>
         {" "}
         C
@@ -258,6 +300,27 @@ function Synthesizer() {
           <span></span>
           Reset Octave
         </button>
+        <div className="settingsBar">
+  <div className="left" >
+    <label>Volume: </label>
+    <input type="range" min="0.0" max="1.0" step="0.01"
+        value={volume} list="volumes" name="volume" onChange={(e)=>changeVolume(e)} />
+    {/* <datalist id="volumes">
+      <option value="0.0" label="Mute" />
+      <option value="1.0" label="100%" />
+    </datalist> */}
+  </div>
+  <div className="right">
+    <span>Current waveform: </span>
+    <select name="waveform">
+      <option value="sine">Sine</option>
+      <option value="square" selected>Square</option>
+      <option value="sawtooth">Sawtooth</option>
+      <option value="triangle">Triangle</option>
+      <option value="custom">Custom</option>
+    </select>
+  </div>
+</div>
       {/* </div> */}
       <div
         style={{

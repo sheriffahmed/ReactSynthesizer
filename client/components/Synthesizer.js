@@ -250,7 +250,7 @@ function Synthesizer() {
         </button>
         <button
           className={buttonAni ?`button-glow animate` : `button-glow`}
-      onClick={() => {buttonBubbles(); setOctave(startingOctave);}}
+      onClick={() => setOctave(startingOctave)}
         >
           <span></span>
           <span></span>

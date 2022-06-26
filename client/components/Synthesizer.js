@@ -162,7 +162,7 @@ function Synthesizer() {
   const [pressedKeys, setPressedKeys] = useState({});
   const [octave, setOctave] = useState(startingOctave);
   const [buttonAni, setButtonAni] = useState(false);
-  const [volume, setVolume] = useState("0.5");
+  const [volume, setVolume] = useState("0.025");
   const [mainGainNode, setMainGainNode] = useState(undefined);
   const [oscList, setOscList] = useState(noteFreq);
   // const [audioContext, setAudioContext] = useState(
@@ -229,16 +229,17 @@ function Synthesizer() {
     const keyPress = String(key).toUpperCase();
     if (noteProps[keyPress]) {
       if (!noteProps[keyPress].pressed) {
-        // console.log(noteFreq)
+        console.log('232 octave: ',octave)
+        let currentOctave = octave + noteProps[keyPress].octave
         let newStart = await playOsc(
-          octave + noteProps[keyPress].octave,
+         currentOctave ,
           noteProps[keyPress].note
         );
         setOscList(async (prevState) => {
           let promise = await prevState
           let newState =  [...promise] ;
-          console.log(newStart)
-          newState[octave + noteProps[keyPress].octave][
+          console.log('241 newStart: ',newStart)
+          newState[currentOctave][
             noteProps[keyPress].note
           ] = newStart;
           // newState[octave + noteProps[keyPress].octave][noteProps[keyPress].note] = await playOsc( (octave + noteProps[keyPress].octave), noteProps[keyPress].note)
@@ -263,14 +264,25 @@ function Synthesizer() {
     // console.log(noteProps[keyPress].note)
     const noteValue = noteProps[keyPress].note
     if (noteProps[keyPress]) {
-      console.log(
-        await oscList[octave + noteProps[keyPress].octave][
-          noteProps[keyPress].note
-        ]
-      );
-      let promiseOsc =  await oscList[octave + noteProps[keyPress].octave][
-          noteProps[keyPress].note
-        ]
+      let currentOctave =octave + noteProps[keyPress].octave
+
+      console.log(currentOctave)
+      console.log(await oscList)
+      let resultPromise = await oscList
+      console.log('272 Result Promise: ',resultPromise[currentOctave])
+      console.log(oscList[currentOctave])
+      // console.log(
+      //   await oscList[currentOctave][
+      //     noteProps[keyPress].note
+      //   ]
+      // );
+      // let promiseOsc =  await oscList[octave + noteProps[keyPress].octave][
+      //     noteProps[keyPress].note
+      //   ]
+      let promiseOsc = resultPromise[currentOctave][
+        noteProps[keyPress].note
+      ]
+      console.log('285 promise Osc: ',promiseOsc)
       stopOsc(
         promiseOsc
       );

@@ -2849,7 +2849,7 @@ function Synthesizer() {
   const [pressedKeys, setPressedKeys] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
   const [octave, setOctave] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(startingOctave);
   const [buttonAni, setButtonAni] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  const [volume, setVolume] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.5");
+  const [volume, setVolume] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.025");
   const [mainGainNode, setMainGainNode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(undefined);
   const [oscList, setOscList] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(noteFreq); // const [audioContext, setAudioContext] = useState(
   //   new (window.AudioContext || window.webkitAudioContext)() || null(null)
@@ -2913,13 +2913,14 @@ function Synthesizer() {
 
     if (noteProps[keyPress]) {
       if (!noteProps[keyPress].pressed) {
-        // console.log(noteFreq)
-        let newStart = await playOsc(octave + noteProps[keyPress].octave, noteProps[keyPress].note);
+        console.log('232 octave: ', octave);
+        let currentOctave = octave + noteProps[keyPress].octave;
+        let newStart = await playOsc(currentOctave, noteProps[keyPress].note);
         setOscList(async prevState => {
           let promise = await prevState;
           let newState = [...promise];
-          console.log(newStart);
-          newState[octave + noteProps[keyPress].octave][noteProps[keyPress].note] = newStart; // newState[octave + noteProps[keyPress].octave][noteProps[keyPress].note] = await playOsc( (octave + noteProps[keyPress].octave), noteProps[keyPress].note)
+          console.log('241 newStart: ', newStart);
+          newState[currentOctave][noteProps[keyPress].note] = newStart; // newState[octave + noteProps[keyPress].octave][noteProps[keyPress].note] = await playOsc( (octave + noteProps[keyPress].octave), noteProps[keyPress].note)
 
           return newState;
         }); // console.log(oscList)
@@ -2947,8 +2948,22 @@ function Synthesizer() {
     const noteValue = noteProps[keyPress].note;
 
     if (noteProps[keyPress]) {
-      console.log(await oscList[octave + noteProps[keyPress].octave][noteProps[keyPress].note]);
-      let promiseOsc = await oscList[octave + noteProps[keyPress].octave][noteProps[keyPress].note];
+      let currentOctave = octave + noteProps[keyPress].octave;
+      console.log(currentOctave);
+      console.log(await oscList);
+      let resultPromise = await oscList;
+      console.log('272 Result Promise: ', resultPromise[currentOctave]);
+      console.log(oscList[currentOctave]); // console.log(
+      //   await oscList[currentOctave][
+      //     noteProps[keyPress].note
+      //   ]
+      // );
+      // let promiseOsc =  await oscList[octave + noteProps[keyPress].octave][
+      //     noteProps[keyPress].note
+      //   ]
+
+      let promiseOsc = resultPromise[currentOctave][noteProps[keyPress].note];
+      console.log('285 promise Osc: ', promiseOsc);
       stopOsc(promiseOsc);
       console.log(oscList); // setOscList( async (prevState) => {
       //   console.log( await prevState)

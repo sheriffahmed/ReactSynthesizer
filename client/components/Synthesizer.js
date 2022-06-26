@@ -165,29 +165,17 @@ function Synthesizer() {
   const [volume, setVolume] = useState("0.025");
   const [mainGainNode, setMainGainNode] = useState(undefined);
   const [oscList, setOscList] = useState(noteFreq);
-  // const [audioContext, setAudioContext] = useState(
-  //   new (window.AudioContext || window.webkitAudioContext)() || null(null)
-  // );
+
   const [audioContext, setAudioContext] = useState(
     new (window.AudioContext || window.webkitAudioContext)()
   );
-  // let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  // let mainGainNode;
-  // let mainGainNode = !audioContext ? null : audioContext.createGain();
-  //  !audioContext ? null : mainGainNode.connect(audioContext.destination);
-  //  !audioContext ? null : mainGainNode.gain.value = volume
+  const [mousePressed, setMousePressed] = useState(false)
+
   let customWaveform = null;
   let sineTerms = null;
   let cosineTerms = null;
 
   let synth = new Tone.PolySynth(Tone.Synth).toDestination();
-
-  // const createAudioContext = () => {
-  //   setAudioContext(new (window.AudioContext || window.webkitAudioContext)());
-  //   !audioContext ? null : (mainGainNode = audioContext.createGain());
-  //   !audioContext ? null : mainGainNode.connect(audioContext.destination);
-  //   !audioContext ? null : (mainGainNode.gain.value = volume);
-  // };
 
   const increaseOctave = () => {
     if (octave < startingOctave + 2) {
@@ -202,26 +190,15 @@ function Synthesizer() {
 
   const playOsc = async (o, n) => {
     let osc = audioContext.createOscillator();
-    // if (audioContext) {
       osc.connect(mainGainNode);
       osc.type = "sine";
-      // console.log(noteFreq[o][n]);
       osc.frequency.value = noteFreq[o][n];
-      // console.log(osc)
-      // const newO = await  osc.start();
       await osc.start();
       return osc;
-      //  return newO
-    // }
   };
 
   const stopOsc = async (osc) => {
-    console.log(osc);
-    // let newO =await  osc.stop();
     await osc.stop();
-    // console.log(newO)
-    console.log(osc);
-
     return osc;
   };
 
@@ -229,7 +206,6 @@ function Synthesizer() {
     const keyPress = String(key).toUpperCase();
     if (noteProps[keyPress]) {
       if (!noteProps[keyPress].pressed) {
-        console.log('232 octave: ',octave)
         let currentOctave = octave + noteProps[keyPress].octave
         let newStart = await playOsc(
          currentOctave ,
@@ -238,19 +214,15 @@ function Synthesizer() {
         setOscList(async (prevState) => {
           let promise = await prevState
           let newState =  [...promise] ;
-          console.log('241 newStart: ',newStart)
           newState[currentOctave][
             noteProps[keyPress].note
           ] = newStart;
-          // newState[octave + noteProps[keyPress].octave][noteProps[keyPress].note] = await playOsc( (octave + noteProps[keyPress].octave), noteProps[keyPress].note)
+
+
           return newState;
         });
-        // console.log(oscList)
-        // console.log(
-        //   await oscList[octave + noteProps[keyPress].octave][
-        //     noteProps[keyPress].note
-        //   ]
-        // );
+
+
         setNoteProps((prevState) => {
           let newState = { ...prevState };
           newState[keyPress].pressed = true;
@@ -261,42 +233,19 @@ function Synthesizer() {
   };
   const upHandler = async ({ key }) => {
     const keyPress = String(key).toUpperCase();
-    // console.log(noteProps[keyPress].note)
     const noteValue = noteProps[keyPress].note
     if (noteProps[keyPress]) {
       let currentOctave =octave + noteProps[keyPress].octave
 
-      console.log(currentOctave)
-      console.log(await oscList)
+// in case state is stuck in promise
       let resultPromise = await oscList
-      console.log('272 Result Promise: ',resultPromise[currentOctave])
-      console.log(oscList[currentOctave])
-      // console.log(
-      //   await oscList[currentOctave][
-      //     noteProps[keyPress].note
-      //   ]
-      // );
-      // let promiseOsc =  await oscList[octave + noteProps[keyPress].octave][
-      //     noteProps[keyPress].note
-      //   ]
+
       let promiseOsc = resultPromise[currentOctave][
         noteProps[keyPress].note
       ]
-      console.log('285 promise Osc: ',promiseOsc)
       stopOsc(
         promiseOsc
       );
-        console.log(oscList)
-      // setOscList( async (prevState) => {
-      //   console.log( await prevState)
-      //   const promise = await prevState
-      //   let newState = [ ...promise ];
-      //    newState[octave + noteProps[keyPress].octave][
-      //     noteValue
-      //   ] = undefined
-      //   return newState;
-      // });
-
 
       setNoteProps((prevState) => {
         let newState = { ...prevState };
@@ -305,10 +254,22 @@ function Synthesizer() {
       });
     }
   };
+  const mouseDownHandler = (e) =>{
+    setMousePressed(true)
+    if(e.target.dataset.key){
+      downHandler(e.target.dataset)
+    }
+  }
+  const mouseUpHandler = (e) =>{
+    setMousePressed(false)
+    if(e.target.dataset.key){
+      upHandler(e.target.dataset)
+    }
+  }
 
   const changeVolume = (e) => {
     e.persist();
-    console.log(e.target);
+    console.log(e.target.value);
     setVolume((prevState) => e.target.value);
     // mainGainNode.gain.value = volume
   };
@@ -329,27 +290,23 @@ function Synthesizer() {
   };
   // Effects
   useEffect(() => {
-    // if(!oscList.length){
-    //   // setOscList(noteFreq);
-    // }
+
     if(!mainGainNode){
       const gainNode = audioContext.createGain();
-      // console.log(gainNode)
       gainNode.connect(audioContext.destination);
-      // console.log(gainNode)
-
       gainNode.gain.value =volume;
       setMainGainNode(gainNode);
-      // console.log(mainGainNode)
     }
-    // console.log(gainNode)
-    // mainGainNode.gain.value =volume;
     window.addEventListener("keydown", downHandler);
     window.addEventListener("keyup", upHandler);
+    window.addEventListener("mousedown", mouseDownHandler);
+    window.addEventListener("mouseup", mouseUpHandler);
     // Remove event listeners on cleanup
     return () => {
       window.removeEventListener("keydown", downHandler);
       window.removeEventListener("keyup", upHandler);
+      window.removeEventListener("mousedown", mouseDownHandler);
+      window.removeEventListener("mouseup", mouseUpHandler);
       synth = new Tone.PolySynth(Tone.Synth).toDestination();
       setTimeout(function () {
         // e.target.classList.remove('animate');
@@ -360,12 +317,9 @@ function Synthesizer() {
 
   useEffect(()=>{
     if(mainGainNode === undefined){
-
       return;
     }else {
-
 mainGainNode.gain.value =volume;
-
     }
   }, [volume, mainGainNode])
 
@@ -378,7 +332,7 @@ mainGainNode.gain.value =volume;
               setAudioContext(
                 new (window.AudioContext || window.webkitAudioContext)()
               );
-              mainGainNode = audioContext.createGain();
+              // mainGainNode = audioContext.createGain();
               mainGainNode.connect(audioContext.destination);
               mainGainNode.gain.value = volume;
             }}
@@ -388,14 +342,12 @@ mainGainNode.gain.value =volume;
         </div>
       ) : (
         <div>
-          {/* {console.log(audioContext)} */}
-          {/* {console.log(mainGainNode)} */}
           Synthesizer
+          {console.log(window)}
           {/* <br />
       <br />
       <br />
       <br /> */}
-          {/* {console.log(createNoteTable())} */}
           <button
             onClick={() => synth.triggerAttackRelease(`C${octave}`, "8n")}
           >
@@ -452,7 +404,7 @@ mainGainNode.gain.value =volume;
     </datalist> */}
             </div>
             <div className="right">
-              <label>Current waveform: </label>
+              {/* <label>Current waveform: </label> */}
               {/* <select name="waveform" defaultValue="sine">
                 <option value="sine">Sine</option>
                 <option value="square" selected>
@@ -481,24 +433,34 @@ mainGainNode.gain.value =volume;
                   noteProps[`A`]["pressed"] ? "white pressed" : "white"
                 }`}
                 data-key={`A`}
-                onMouseDown={() => {
-                  if (!noteProps[`A`]["pressed"]) {
-                    synth.triggerAttackRelease(`C${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`A`]["pressed"]) {
+                //     synth.triggerAttackRelease(`C${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`A`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`A`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`A`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'A'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`A`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'A'})
+                  }
+                }}
                 onClick={() => {}}
               >
                 A
@@ -509,24 +471,34 @@ mainGainNode.gain.value =volume;
                   noteProps[`W`]["pressed"] ? "black pressed" : "black"
                 }`}
                 data-key={`W`}
-                onMouseDown={() => {
-                  if (!noteProps[`W`]["pressed"]) {
-                    synth.triggerAttackRelease(`C#${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`W`]["pressed"]) {
+                //     synth.triggerAttackRelease(`C#${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`W`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`W`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`W`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'W'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`W`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'W'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`C#${octave}`, "8n");
                 }}
@@ -541,24 +513,34 @@ mainGainNode.gain.value =volume;
                     : "white offset"
                 }`}
                 data-key={`S`}
-                onMouseDown={() => {
-                  if (!noteProps[`S`]["pressed"]) {
-                    synth.triggerAttackRelease(`D${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`S`]["pressed"]) {
+                //     synth.triggerAttackRelease(`D${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`S`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`S`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`S`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'S'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`S`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'S'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`D${octave}`, "8n");
                 }}
@@ -571,24 +553,34 @@ mainGainNode.gain.value =volume;
                   noteProps[`E`]["pressed"] ? "black pressed" : "black"
                 }`}
                 data-key={`E`}
-                onMouseDown={() => {
-                  if (!noteProps[`E`]["pressed"]) {
-                    synth.triggerAttackRelease(`D#${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`E`]["pressed"]) {
+                //     synth.triggerAttackRelease(`D#${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`E`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`E`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`E`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'E'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`E`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'E'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`D#${octave}`, "8n");
                 }}
@@ -603,24 +595,34 @@ mainGainNode.gain.value =volume;
                     : "white offset"
                 }`}
                 data-key={`D`}
-                onMouseDown={() => {
-                  if (!noteProps[`D`]["pressed"]) {
-                    synth.triggerAttackRelease(`E${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`D`]["pressed"]) {
+                //     synth.triggerAttackRelease(`E${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`D`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`D`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`D`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'D'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`D`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'D'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`E${octave}`, "8n");
                 }}
@@ -633,24 +635,34 @@ mainGainNode.gain.value =volume;
                   noteProps[`F`]["pressed"] ? "white pressed" : "white"
                 }`}
                 data-key={`F`}
-                onMouseDown={() => {
-                  if (!noteProps[`F`]["pressed"]) {
-                    synth.triggerAttackRelease(`F${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`F`]["pressed"]) {
+                //     synth.triggerAttackRelease(`F${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`F`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`F`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`F`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'F'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`F`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'F'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`F${octave}`, "8n");
                 }}
@@ -663,24 +675,34 @@ mainGainNode.gain.value =volume;
                   noteProps[`T`]["pressed"] ? "black pressed" : "black"
                 }`}
                 data-key={`T`}
-                onMouseDown={() => {
-                  if (!noteProps[`T`]["pressed"]) {
-                    synth.triggerAttackRelease(`F#${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`T`]["pressed"]) {
+                //     synth.triggerAttackRelease(`F#${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`T`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`T`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`T`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'T'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`T`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'T'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`F#${octave}`, "8n");
                 }}
@@ -695,24 +717,34 @@ mainGainNode.gain.value =volume;
                     : "white offset"
                 }`}
                 data-key={`G`}
-                onMouseDown={() => {
-                  if (!noteProps[`G`]["pressed"]) {
-                    synth.triggerAttackRelease(`G${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`G`]["pressed"]) {
+                //     synth.triggerAttackRelease(`G${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`G`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`G`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`G`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'G'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`G`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'G'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`G${octave}`, "8n");
                 }}
@@ -725,24 +757,34 @@ mainGainNode.gain.value =volume;
                   noteProps[`Y`]["pressed"] ? "black pressed" : "black"
                 }`}
                 data-key={`Y`}
-                onMouseDown={() => {
-                  if (!noteProps[`Y`]["pressed"]) {
-                    synth.triggerAttackRelease(`G#${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`Y`]["pressed"]) {
+                //     synth.triggerAttackRelease(`G#${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`Y`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`Y`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`Y`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'Y'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`Y`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'Y'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`G#${octave}`, "8n");
                 }}
@@ -757,24 +799,34 @@ mainGainNode.gain.value =volume;
                     : "white offset"
                 }`}
                 data-key={`H`}
-                onMouseDown={() => {
-                  if (!noteProps[`H`]["pressed"]) {
-                    synth.triggerAttackRelease(`A${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`H`]["pressed"]) {
+                //     synth.triggerAttackRelease(`A${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`H`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`H`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`H`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'H'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`H`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'H'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`A${octave}`, "8n");
                 }}
@@ -787,24 +839,34 @@ mainGainNode.gain.value =volume;
                   noteProps[`U`]["pressed"] ? "black pressed" : "black"
                 }`}
                 data-key={`U`}
-                onMouseDown={() => {
-                  if (!noteProps[`U`]["pressed"]) {
-                    synth.triggerAttackRelease(`A#${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`U`]["pressed"]) {
+                //     synth.triggerAttackRelease(`A#${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`U`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`U`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`U`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'U'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`U`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'U'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`A#${octave}`, "8n");
                 }}
@@ -819,24 +881,34 @@ mainGainNode.gain.value =volume;
                     : "white offset"
                 }`}
                 data-key={`J`}
-                onMouseDown={() => {
-                  if (!noteProps[`J`]["pressed"]) {
-                    synth.triggerAttackRelease(`B${octave}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`J`]["pressed"]) {
+                //     synth.triggerAttackRelease(`B${octave}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`J`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`J`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`J`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'J'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`J`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'J'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`B${octave}`, "8n");
                 }}
@@ -849,24 +921,34 @@ mainGainNode.gain.value =volume;
                   noteProps[`K`]["pressed"] ? "white pressed" : "white"
                 }`}
                 data-key={`K`}
-                onMouseDown={() => {
-                  if (!noteProps[`K`]["pressed"]) {
-                    synth.triggerAttackRelease(`C${octave + 1}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`K`]["pressed"]) {
+                //     synth.triggerAttackRelease(`C${octave + 1}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`K`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`K`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`K`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'K'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`K`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'K'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`C${octave + 1}`, "8n");
                 }}
@@ -879,24 +961,34 @@ mainGainNode.gain.value =volume;
                   noteProps[`O`]["pressed"] ? "black pressed" : "black"
                 }`}
                 data-key={`O`}
-                onMouseDown={() => {
-                  if (!noteProps[`O`]["pressed"]) {
-                    synth.triggerAttackRelease(`C#${octave + 1}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`O`]["pressed"]) {
+                //     synth.triggerAttackRelease(`C#${octave + 1}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`O`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`O`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`O`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'O'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`O`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'O'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`C#${octave + 1}`, "8n");
                 }}
@@ -911,24 +1003,34 @@ mainGainNode.gain.value =volume;
                     : "white offset"
                 }`}
                 data-key={`L`}
-                onMouseDown={() => {
-                  if (!noteProps[`L`]["pressed"]) {
-                    synth.triggerAttackRelease(`D${octave + 1}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`L`]["pressed"]) {
+                //     synth.triggerAttackRelease(`D${octave + 1}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`L`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`L`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`L`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'L'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`L`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'L'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`D${octave + 1}`, "8n");
                 }}
@@ -941,24 +1043,34 @@ mainGainNode.gain.value =volume;
                   noteProps[`P`]["pressed"] ? "black pressed" : "black"
                 }`}
                 data-key={`P`}
-                onMouseDown={() => {
-                  if (!noteProps[`P`]["pressed"]) {
-                    synth.triggerAttackRelease(`D#${octave + 1}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`P`]["pressed"]) {
+                //     synth.triggerAttackRelease(`D#${octave + 1}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`P`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`P`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`P`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: 'P'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`P`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: 'P'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`D#${octave + 1}`, "8n");
                 }}
@@ -973,24 +1085,34 @@ mainGainNode.gain.value =volume;
                     : "white offset"
                 }`}
                 data-key={`;`}
-                onMouseDown={() => {
-                  if (!noteProps[`;`]["pressed"]) {
-                    synth.triggerAttackRelease(`E${octave + 1}`, "8n");
+                // onMouseDown={() => {
+                //   if (!noteProps[`;`]["pressed"]) {
+                //     synth.triggerAttackRelease(`E${octave + 1}`, "8n");
 
-                    setNoteProps((prevState) => {
-                      let newState = { ...prevState };
-                      newState[`;`].pressed = true;
-                      return newState;
-                    });
+                //     setNoteProps((prevState) => {
+                //       let newState = { ...prevState };
+                //       newState[`;`].pressed = true;
+                //       return newState;
+                //     });
+                //   }
+                // }}
+                // onMouseUp={() =>
+                //   setNoteProps((prevState) => {
+                //     let newState = { ...prevState };
+                //     newState[`;`].pressed = false;
+                //     return newState;
+                //   })
+                // }
+                onMouseOver={() => {
+                  if(mousePressed){
+                    downHandler({key: ';'})
                   }
                 }}
-                onMouseUp={() =>
-                  setNoteProps((prevState) => {
-                    let newState = { ...prevState };
-                    newState[`;`].pressed = false;
-                    return newState;
-                  })
-                }
+                onMouseLeave={() =>{
+                  if(mousePressed){
+                    upHandler({key: ';'})
+                  }
+                }}
                 onClick={() => {
                   // synth.triggerAttackRelease(`E${octave + 1}`, "8n");
                 }}

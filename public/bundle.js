@@ -2872,7 +2872,8 @@ function Synthesizer() {
   };
 
   const playOsc = async (o, n) => {
-    let osc = audioContext.createOscillator();
+    let osc = audioContext.createOscillator(); // mainGainNode.gain.linearRampToValueAtTime(Number(volume), audioContext.currentTime + 1 + 0.005)
+
     osc.connect(mainGainNode);
     osc.type = "sine";
     osc.frequency.value = noteFreq[o][n];
@@ -2881,7 +2882,12 @@ function Synthesizer() {
   };
 
   const stopOsc = async osc => {
-    await osc.stop();
+    console.log(osc); // osc.onended = async () => {
+    // mainGainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 1)
+
+    await osc.stop(); // mainGainNode.gain.linearRampToValueAtTime(Number(volume), audioContext.currentTime + 10 + 0.005)
+    // }
+
     return osc;
   };
 
@@ -2920,7 +2926,8 @@ function Synthesizer() {
       let currentOctave = octave + noteProps[keyPress].octave; // in case state is stuck in promise
 
       let resultPromise = await oscList;
-      let promiseOsc = resultPromise[currentOctave][noteProps[keyPress].note];
+      let promiseOsc = resultPromise[currentOctave][noteProps[keyPress].note]; //  await mainGainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 1)
+
       stopOsc(promiseOsc);
       setNoteProps(prevState => {
         let newState = { ...prevState
@@ -2977,6 +2984,8 @@ function Synthesizer() {
       const gainNode = audioContext.createGain();
       gainNode.connect(audioContext.destination);
       gainNode.gain.value = volume;
+      gainNode.gain.setValueAtTime(0, audioContext.currentTime + 0.005);
+      gainNode.gain.linearRampToValueAtTime(Number(volume), audioContext.currentTime + 1 + 0.005);
       setMainGainNode(gainNode);
     }
 
@@ -3002,6 +3011,14 @@ function Synthesizer() {
     if (mainGainNode === undefined) {
       return;
     } else {
+      let {
+        currentTime
+      } = audioContext;
+      let attack = 2; // mainGainNode
+      // mainGainNode.gain.cancelScheduledValues(currentTime)
+      // mainGainNode.gain.setValueAtTime(0, currentTime + 0.005)
+      // mainGainNode.gain.linearRampToValueAtTime(Number(volume), currentTime + attack + 0.005)
+
       mainGainNode.gain.value = volume;
     }
   }, [volume, mainGainNode]);
@@ -3012,9 +3029,7 @@ function Synthesizer() {
       mainGainNode.connect(audioContext.destination);
       mainGainNode.gain.value = volume;
     }
-  }, "Create Audio Context")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, "Synthesizer", console.log(window), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
-    onClick: () => synth.triggerAttackRelease(`C${octave}`, "8n")
-  }, " ", "C"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+  }, "Create Audio Context")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, "Synthesizer", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
     className: buttonAni ? `button-glow animate` : `button-glow`,
     onClick: () => increaseOctave()
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null), "+1 Octave"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {

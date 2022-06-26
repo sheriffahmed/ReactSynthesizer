@@ -190,6 +190,8 @@ function Synthesizer() {
 
   const playOsc = async (o, n) => {
     let osc = audioContext.createOscillator();
+    // mainGainNode.gain.linearRampToValueAtTime(Number(volume), audioContext.currentTime + 1 + 0.005)
+
       osc.connect(mainGainNode);
       osc.type = "sine";
       osc.frequency.value = noteFreq[o][n];
@@ -198,7 +200,14 @@ function Synthesizer() {
   };
 
   const stopOsc = async (osc) => {
-    await osc.stop();
+    console.log(osc)
+    // osc.onended = async () => {
+      // mainGainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 1)
+
+      await osc.stop();
+    // mainGainNode.gain.linearRampToValueAtTime(Number(volume), audioContext.currentTime + 10 + 0.005)
+
+    // }
     return osc;
   };
 
@@ -243,6 +252,8 @@ function Synthesizer() {
       let promiseOsc = resultPromise[currentOctave][
         noteProps[keyPress].note
       ]
+    //  await mainGainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 1)
+
       stopOsc(
         promiseOsc
       );
@@ -295,6 +306,9 @@ function Synthesizer() {
       const gainNode = audioContext.createGain();
       gainNode.connect(audioContext.destination);
       gainNode.gain.value =volume;
+      gainNode.gain.setValueAtTime(0, audioContext.currentTime + 0.005)
+    gainNode.gain.linearRampToValueAtTime(Number(volume), audioContext.currentTime + 1 + 0.005)
+
       setMainGainNode(gainNode);
     }
     window.addEventListener("keydown", downHandler);
@@ -319,6 +333,12 @@ function Synthesizer() {
     if(mainGainNode === undefined){
       return;
     }else {
+let {currentTime} =audioContext
+let attack =2
+      // mainGainNode
+      // mainGainNode.gain.cancelScheduledValues(currentTime)
+      // mainGainNode.gain.setValueAtTime(0, currentTime + 0.005)
+      // mainGainNode.gain.linearRampToValueAtTime(Number(volume), currentTime + attack + 0.005)
 mainGainNode.gain.value =volume;
     }
   }, [volume, mainGainNode])
@@ -343,17 +363,17 @@ mainGainNode.gain.value =volume;
       ) : (
         <div>
           Synthesizer
-          {console.log(window)}
+          {/* {console.log(window)} */}
           {/* <br />
       <br />
       <br />
       <br /> */}
-          <button
+          {/* <button
             onClick={() => synth.triggerAttackRelease(`C${octave}`, "8n")}
           >
             {" "}
             C
-          </button>
+          </button> */}
           {/* <div className="button-container"> */}
           <button
             className={buttonAni ? `button-glow animate` : `button-glow`}

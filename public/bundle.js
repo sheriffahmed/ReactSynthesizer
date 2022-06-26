@@ -2699,7 +2699,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Synthesizer);
 
 function Synthesizer() {
-  const startingOctave = 4;
+  const startingOctave = 3;
   let noteFreq = [];
 
   const createNoteTable = () => {
@@ -3046,29 +3046,18 @@ function Synthesizer() {
       transform: "translateY(-50%)",
       left: "40%"
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("ul", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", {
+    style: {
+      zIndex: 2,
+      right: "250px",
+      top: "20px"
+    }
+  }, octave - startingOctave === 0 ? '' : octave > startingOctave ? `+${octave - startingOctave}` : `${octave - startingOctave}`), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("ul", {
     id: "keyboard"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "C",
     className: ` ${noteProps[`A`]["pressed"] ? "white pressed" : "white"}`,
-    "data-key": `A` // onMouseDown={() => {
-    //   if (!noteProps[`A`]["pressed"]) {
-    //     synth.triggerAttackRelease(`C${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`A`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`A`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `A`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3087,24 +3076,7 @@ function Synthesizer() {
   }, "A"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "C#",
     className: `${noteProps[`W`]["pressed"] ? "black pressed" : "black"}`,
-    "data-key": `W` // onMouseDown={() => {
-    //   if (!noteProps[`W`]["pressed"]) {
-    //     synth.triggerAttackRelease(`C#${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`W`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`W`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `W`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3124,24 +3096,7 @@ function Synthesizer() {
   }, "W"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "D",
     className: `${noteProps[`S`]["pressed"] ? "white offset pressed" : "white offset"}`,
-    "data-key": `S` // onMouseDown={() => {
-    //   if (!noteProps[`S`]["pressed"]) {
-    //     synth.triggerAttackRelease(`D${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`S`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`S`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `S`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3161,24 +3116,7 @@ function Synthesizer() {
   }, "S"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "D#",
     className: `${noteProps[`E`]["pressed"] ? "black pressed" : "black"}`,
-    "data-key": `E` // onMouseDown={() => {
-    //   if (!noteProps[`E`]["pressed"]) {
-    //     synth.triggerAttackRelease(`D#${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`E`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`E`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `E`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3198,24 +3136,7 @@ function Synthesizer() {
   }, "E"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "E",
     className: `${noteProps[`D`]["pressed"] ? "white offset pressed" : "white offset"}`,
-    "data-key": `D` // onMouseDown={() => {
-    //   if (!noteProps[`D`]["pressed"]) {
-    //     synth.triggerAttackRelease(`E${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`D`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`D`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `D`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3235,24 +3156,7 @@ function Synthesizer() {
   }, "D"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "F",
     className: ` ${noteProps[`F`]["pressed"] ? "white pressed" : "white"}`,
-    "data-key": `F` // onMouseDown={() => {
-    //   if (!noteProps[`F`]["pressed"]) {
-    //     synth.triggerAttackRelease(`F${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`F`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`F`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `F`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3272,24 +3176,7 @@ function Synthesizer() {
   }, "F"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "F#",
     className: `${noteProps[`T`]["pressed"] ? "black pressed" : "black"}`,
-    "data-key": `T` // onMouseDown={() => {
-    //   if (!noteProps[`T`]["pressed"]) {
-    //     synth.triggerAttackRelease(`F#${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`T`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`T`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `T`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3309,24 +3196,7 @@ function Synthesizer() {
   }, "T"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "G",
     className: `${noteProps[`G`]["pressed"] ? "white offset pressed" : "white offset"}`,
-    "data-key": `G` // onMouseDown={() => {
-    //   if (!noteProps[`G`]["pressed"]) {
-    //     synth.triggerAttackRelease(`G${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`G`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`G`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `G`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3346,24 +3216,7 @@ function Synthesizer() {
   }, "G"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "G#",
     className: `${noteProps[`Y`]["pressed"] ? "black pressed" : "black"}`,
-    "data-key": `Y` // onMouseDown={() => {
-    //   if (!noteProps[`Y`]["pressed"]) {
-    //     synth.triggerAttackRelease(`G#${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`Y`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`Y`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `Y`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3383,24 +3236,7 @@ function Synthesizer() {
   }, "Y"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "A",
     className: `${noteProps[`H`]["pressed"] ? "white offset pressed" : "white offset"}`,
-    "data-key": `H` // onMouseDown={() => {
-    //   if (!noteProps[`H`]["pressed"]) {
-    //     synth.triggerAttackRelease(`A${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`H`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`H`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `H`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3420,24 +3256,7 @@ function Synthesizer() {
   }, "H"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "A#",
     className: `${noteProps[`U`]["pressed"] ? "black pressed" : "black"}`,
-    "data-key": `U` // onMouseDown={() => {
-    //   if (!noteProps[`U`]["pressed"]) {
-    //     synth.triggerAttackRelease(`A#${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`U`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`U`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `U`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3457,24 +3276,7 @@ function Synthesizer() {
   }, "U"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "B",
     className: `${noteProps[`J`]["pressed"] ? "white offset pressed" : "white offset"}`,
-    "data-key": `J` // onMouseDown={() => {
-    //   if (!noteProps[`J`]["pressed"]) {
-    //     synth.triggerAttackRelease(`B${octave}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`J`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`J`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `J`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3494,24 +3296,7 @@ function Synthesizer() {
   }, "J"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "C2",
     className: ` ${noteProps[`K`]["pressed"] ? "white pressed" : "white"}`,
-    "data-key": `K` // onMouseDown={() => {
-    //   if (!noteProps[`K`]["pressed"]) {
-    //     synth.triggerAttackRelease(`C${octave + 1}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`K`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`K`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `K`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3531,24 +3316,7 @@ function Synthesizer() {
   }, "K"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "C#2",
     className: `${noteProps[`O`]["pressed"] ? "black pressed" : "black"}`,
-    "data-key": `O` // onMouseDown={() => {
-    //   if (!noteProps[`O`]["pressed"]) {
-    //     synth.triggerAttackRelease(`C#${octave + 1}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`O`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`O`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `O`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3568,24 +3336,7 @@ function Synthesizer() {
   }, "O"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "D2",
     className: `${noteProps[`L`]["pressed"] ? "white offset pressed" : "white offset"}`,
-    "data-key": `L` // onMouseDown={() => {
-    //   if (!noteProps[`L`]["pressed"]) {
-    //     synth.triggerAttackRelease(`D${octave + 1}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`L`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`L`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `L`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3605,24 +3356,7 @@ function Synthesizer() {
   }, "L"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "D#2",
     className: `${noteProps[`P`]["pressed"] ? "black pressed" : "black"}`,
-    "data-key": `P` // onMouseDown={() => {
-    //   if (!noteProps[`P`]["pressed"]) {
-    //     synth.triggerAttackRelease(`D#${octave + 1}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`P`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`P`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `P`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({
@@ -3642,24 +3376,7 @@ function Synthesizer() {
   }, "P"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
     id: "E2",
     className: `${noteProps[`;`]["pressed"] ? "white offset pressed" : "white offset"}`,
-    "data-key": `;` // onMouseDown={() => {
-    //   if (!noteProps[`;`]["pressed"]) {
-    //     synth.triggerAttackRelease(`E${octave + 1}`, "8n");
-    //     setNoteProps((prevState) => {
-    //       let newState = { ...prevState };
-    //       newState[`;`].pressed = true;
-    //       return newState;
-    //     });
-    //   }
-    // }}
-    // onMouseUp={() =>
-    //   setNoteProps((prevState) => {
-    //     let newState = { ...prevState };
-    //     newState[`;`].pressed = false;
-    //     return newState;
-    //   })
-    // }
-    ,
+    "data-key": `;`,
     onMouseOver: () => {
       if (mousePressed) {
         downHandler({

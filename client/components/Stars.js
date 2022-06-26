@@ -10,7 +10,7 @@ function Stars() {
 
   const [bgStars, setBgStars] =useState([])
   const loadStars = () => {
-    console.log(window)
+    // console.log(window)
     for (let i = 0; i < 200; i++) {
         setBgStars(prevState => [...prevState, {class:"star", style: {
           animation: `twinkle ${~~((Math.random() * 5) + ( i === 100? 1 : 3))}s linear ${~~((Math.random() * 5) + ( i === 100? 1 : 3))}s infinite`,
@@ -25,8 +25,8 @@ useEffect(()=>{
 
   return <div className="bg-stars">
   {bgStars.map( (star, id) =>{
-console.log(window);
-console.log(document)
+// console.log(window);
+// console.log(document)
 
     return <div key={id} className={star.class} style={star.style}
      />

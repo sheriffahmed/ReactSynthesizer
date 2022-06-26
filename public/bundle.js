@@ -2648,8 +2648,7 @@ function Stars() {
   const [bgStars, setBgStars] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
 
   const loadStars = () => {
-    console.log(window);
-
+    // console.log(window)
     for (let i = 0; i < 200; i++) {
       setBgStars(prevState => [...prevState, {
         class: "star",
@@ -2668,8 +2667,8 @@ function Stars() {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     className: "bg-stars"
   }, bgStars.map((star, id) => {
-    console.log(window);
-    console.log(document);
+    // console.log(window);
+    // console.log(document)
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
       key: id,
       className: star.class,
@@ -2701,9 +2700,29 @@ __webpack_require__.r(__webpack_exports__);
 
 function Synthesizer() {
   const startingOctave = 4;
+  let noteFreq = [];
 
-  const func = () => {};
+  const createNoteTable = () => {
+    for (let i = 0; i < 8; i++) {
+      noteFreq[i] = [];
+      noteFreq[i]["C"] = i === 0 ? 32.703195662574829 : noteFreq[i - 1]["C"] * 2;
+      noteFreq[i]["C#"] = i === 0 ? 34.647828872109012 : noteFreq[i - 1]["C#"] * 2;
+      noteFreq[i]["D"] = i === 0 ? 36.708095989675945 : noteFreq[i - 1]["D"] * 2;
+      noteFreq[i]["D#"] = i === 0 ? 38.890872965260113 : noteFreq[i - 1]["D#"] * 2;
+      noteFreq[i]["E"] = i === 0 ? 41.203444614108741 : noteFreq[i - 1]["E"] * 2;
+      noteFreq[i]["F"] = i === 0 ? 43.653528929125485 : noteFreq[i - 1]["F"] * 2;
+      noteFreq[i]["F#"] = i === 0 ? 46.249302838954299 : noteFreq[i - 1]["F#"] * 2;
+      noteFreq[i]["G"] = i === 0 ? 48.999429497718661 : noteFreq[i - 1]["G"] * 2;
+      noteFreq[i]["G#"] = i === 0 ? 51.913087197493142 : noteFreq[i - 1]["G#"] * 2;
+      noteFreq[i]["A"] = i === 0 ? 55.0 : noteFreq[i - 1]["A"] * 2;
+      noteFreq[i]["A#"] = i === 0 ? 58.270470189761239 : noteFreq[i - 1]["A#"] * 2;
+      noteFreq[i]["B"] = i === 0 ? 61.735412657015513 : noteFreq[i - 1]["B"] * 2;
+    }
 
+    return noteFreq;
+  };
+
+  noteFreq = createNoteTable();
   const keyMappings = {
     A: {
       id: "C",
@@ -2831,63 +2850,60 @@ function Synthesizer() {
   const [octave, setOctave] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(startingOctave);
   const [buttonAni, setButtonAni] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [volume, setVolume] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("0.5");
-  let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  let oscList = [];
-  let mainGainNode = audioContext.createGain();
-  mainGainNode.connect(audioContext.destination);
-  mainGainNode.gain.value = volume;
-  let noteFreq = [];
+  const [mainGainNode, setMainGainNode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(undefined);
+  const [oscList, setOscList] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(noteFreq); // const [audioContext, setAudioContext] = useState(
+  //   new (window.AudioContext || window.webkitAudioContext)() || null(null)
+  // );
+
+  const [audioContext, setAudioContext] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(new (window.AudioContext || window.webkitAudioContext)()); // let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  // let mainGainNode;
+  // let mainGainNode = !audioContext ? null : audioContext.createGain();
+  //  !audioContext ? null : mainGainNode.connect(audioContext.destination);
+  //  !audioContext ? null : mainGainNode.gain.value = volume
+
   let customWaveform = null;
   let sineTerms = null;
   let cosineTerms = null;
-
-  const createNoteTable = () => {
-    // let noteFreq = [];
-    for (let i = 0; i < 8; i++) {
-      noteFreq[i] = [];
-      noteFreq[i]["C"] = i === 0 ? 32.703195662574829 : noteFreq[i - 1]["C"] * 2;
-      noteFreq[i]["C#"] = i === 0 ? 34.647828872109012 : noteFreq[i - 1]["C#"] * 2;
-      noteFreq[i]["D"] = i === 0 ? 36.708095989675945 : noteFreq[i - 1]["D"] * 2;
-      noteFreq[i]["D#"] = i === 0 ? 38.890872965260113 : noteFreq[i - 1]["D#"] * 2;
-      noteFreq[i]["E"] = i === 0 ? 41.203444614108741 : noteFreq[i - 1]["E"] * 2;
-      noteFreq[i]["F"] = i === 0 ? 43.653528929125485 : noteFreq[i - 1]["F"] * 2;
-      noteFreq[i]["F#"] = i === 0 ? 46.249302838954299 : noteFreq[i - 1]["F#"] * 2;
-      noteFreq[i]["G"] = i === 0 ? 48.999429497718661 : noteFreq[i - 1]["G"] * 2;
-      noteFreq[i]["G#"] = i === 0 ? 51.913087197493142 : noteFreq[i - 1]["G#"] * 2;
-      noteFreq[i]["A"] = i === 0 ? 55.000000000000000 : noteFreq[i - 1]["A"] * 2;
-      noteFreq[i]["A#"] = i === 0 ? 58.270470189761239 : noteFreq[i - 1]["A#"] * 2;
-      noteFreq[i]["B"] = i === 0 ? 61.735412657015513 : noteFreq[i - 1]["B"] * 2;
-    }
-
-    return noteFreq;
-  };
-
-  let synth = new tone__WEBPACK_IMPORTED_MODULE_1__.PolySynth(tone__WEBPACK_IMPORTED_MODULE_1__.Synth).toDestination(); // synth.debug = true
-  // Handlers
-  //   const buttonBubbles =() =>{
-  //     // e.preventDefault;
-  //     // setButtonAni(prevState=> false)
-  //   // e.target.classList.remove('animate');
-  //   setButtonAni(prevState=> true)
-  //   // e.target.classList.add('animate');
-  //   // setTimeout(function(){
-  //   //   // e.target.classList.remove('animate');
-  //   //   setButtonAni(prevState=> false)
-  //   // },700);
-  // }
+  let synth = new tone__WEBPACK_IMPORTED_MODULE_1__.PolySynth(tone__WEBPACK_IMPORTED_MODULE_1__.Synth).toDestination(); // const createAudioContext = () => {
+  //   setAudioContext(new (window.AudioContext || window.webkitAudioContext)());
+  //   !audioContext ? null : (mainGainNode = audioContext.createGain());
+  //   !audioContext ? null : mainGainNode.connect(audioContext.destination);
+  //   !audioContext ? null : (mainGainNode.gain.value = volume);
+  // };
 
   const increaseOctave = () => {
     if (octave < startingOctave + 2) {
-      // buttonBubbles()
       setOctave(prevState => prevState + 1);
     }
   };
 
   const decreaseOctave = () => {
     if (octave > startingOctave - 2) {
-      // buttonBubbles()
       setOctave(prevState => prevState - 1);
     }
+  };
+
+  const playOsc = async (o, n) => {
+    let osc = audioContext.createOscillator(); // if (audioContext) {
+
+    osc.connect(mainGainNode);
+    osc.type = "sine"; // console.log(noteFreq[o][n]);
+
+    osc.frequency.value = noteFreq[o][n]; // console.log(osc)
+    // const newO = await  osc.start();
+
+    await osc.start();
+    return osc; //  return newO
+    // }
+  };
+
+  const stopOsc = async osc => {
+    console.log(osc); // let newO =await  osc.stop();
+
+    await osc.stop(); // console.log(newO)
+
+    console.log(osc);
+    return osc;
   };
 
   const downHandler = async ({
@@ -2897,8 +2913,22 @@ function Synthesizer() {
 
     if (noteProps[keyPress]) {
       if (!noteProps[keyPress].pressed) {
-        await tone__WEBPACK_IMPORTED_MODULE_1__.start();
-        synth.triggerAttackRelease(`${noteProps[keyPress].note + (noteProps[keyPress].octave + octave)}`, "8n", '+0.05', 0.4);
+        // console.log(noteFreq)
+        let newStart = await playOsc(octave + noteProps[keyPress].octave, noteProps[keyPress].note);
+        setOscList(async prevState => {
+          let promise = await prevState;
+          let newState = [...promise];
+          console.log(newStart);
+          newState[octave + noteProps[keyPress].octave][noteProps[keyPress].note] = newStart; // newState[octave + noteProps[keyPress].octave][noteProps[keyPress].note] = await playOsc( (octave + noteProps[keyPress].octave), noteProps[keyPress].note)
+
+          return newState;
+        }); // console.log(oscList)
+        // console.log(
+        //   await oscList[octave + noteProps[keyPress].octave][
+        //     noteProps[keyPress].note
+        //   ]
+        // );
+
         setNoteProps(prevState => {
           let newState = { ...prevState
           };
@@ -2912,9 +2942,24 @@ function Synthesizer() {
   const upHandler = async ({
     key
   }) => {
-    const keyPress = String(key).toUpperCase();
+    const keyPress = String(key).toUpperCase(); // console.log(noteProps[keyPress].note)
+
+    const noteValue = noteProps[keyPress].note;
 
     if (noteProps[keyPress]) {
+      console.log(await oscList[octave + noteProps[keyPress].octave][noteProps[keyPress].note]);
+      let promiseOsc = await oscList[octave + noteProps[keyPress].octave][noteProps[keyPress].note];
+      stopOsc(promiseOsc);
+      console.log(oscList); // setOscList( async (prevState) => {
+      //   console.log( await prevState)
+      //   const promise = await prevState
+      //   let newState = [ ...promise ];
+      //    newState[octave + noteProps[keyPress].octave][
+      //     noteValue
+      //   ] = undefined
+      //   return newState;
+      // });
+
       setNoteProps(prevState => {
         let newState = { ...prevState
         };
@@ -2950,6 +2995,20 @@ function Synthesizer() {
 
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    // if(!oscList.length){
+    //   // setOscList(noteFreq);
+    // }
+    if (!mainGainNode) {
+      const gainNode = audioContext.createGain(); // console.log(gainNode)
+
+      gainNode.connect(audioContext.destination); // console.log(gainNode)
+
+      gainNode.gain.value = volume;
+      setMainGainNode(gainNode); // console.log(mainGainNode)
+    } // console.log(gainNode)
+    // mainGainNode.gain.value =volume;
+
+
     window.addEventListener("keydown", downHandler);
     window.addEventListener("keyup", upHandler); // Remove event listeners on cleanup
 
@@ -2962,9 +3021,23 @@ function Synthesizer() {
         setButtonAni(prevState => false);
       }, 700);
     };
-  }, [octave, buttonAni]); // Component will update when octave state changes
+  }, [octave, buttonAni, mainGainNode]); // Component will update when octave state changes
 
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, "Synthesizer", console.log(createNoteTable()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (mainGainNode === undefined) {
+      return;
+    } else {
+      mainGainNode.gain.value = volume;
+    }
+  }, [volume, mainGainNode]);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, !audioContext ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+    onClick: () => {
+      setAudioContext(new (window.AudioContext || window.webkitAudioContext)());
+      mainGainNode = audioContext.createGain();
+      mainGainNode.connect(audioContext.destination);
+      mainGainNode.gain.value = volume;
+    }
+  }, "Create Audio Context")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, "Synthesizer", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
     onClick: () => synth.triggerAttackRelease(`C${octave}`, "8n")
   }, " ", "C"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
     className: buttonAni ? `button-glow animate` : `button-glow`,
@@ -2990,20 +3063,7 @@ function Synthesizer() {
     onChange: e => changeVolume(e)
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     className: "right"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null, "Current waveform: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("select", {
-    name: "waveform"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("option", {
-    value: "sine"
-  }, "Sine"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("option", {
-    value: "square",
-    selected: true
-  }, "Square"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("option", {
-    value: "sawtooth"
-  }, "Sawtooth"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("option", {
-    value: "triangle"
-  }, "Triangle"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("option", {
-    value: "custom"
-  }, "Custom")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("label", null, "Current waveform: "))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     style: {
       margin: 0,
       position: "absolute",
@@ -3403,7 +3463,7 @@ function Synthesizer() {
     }),
     onClick: () => {// synth.triggerAttackRelease(`E${octave + 1}`, "8n");
     }
-  }, ";"))));
+  }, ";")))));
 }
 
 /***/ }),

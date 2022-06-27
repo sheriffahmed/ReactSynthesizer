@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d public/bundle.js",
+    "deploy": "gh-pages -d public",
     "build": "webpack",
     "build:dev": "npm run build -- --watch --mode=development",
     "seed": "node script/seed.js",

@@ -5,7 +5,7 @@ module.exports = {
   output: {
     path: __dirname,
     filename: "./bundle.js",
-    // publicPath: "/ReactSynthesizer/",
+    publicPath: "/ReactSynthesizer/",
     // filename: "./public/bundle.js",
   },
   plugins: [

@@ -4,6 +4,8 @@ module.exports = {
   entry: ["./client/index.js"],
   output: {
     path: __dirname,
+    // filename: "./bundle.js",
+    // publicPath: "/ReactSynthesizer/",
     filename: "./public/bundle.js",
   },
   plugins: [

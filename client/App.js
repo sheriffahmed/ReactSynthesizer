@@ -5,10 +5,7 @@ import Synthesizer from './components/Synthesizer'
 const App = () => {
   return (
     <div>
-      {/* <Navbar /> */}
-      {/* <Routes />
-      <HookCcounterThree />
-      <HookCounterFour /> */}
+
       <Stars />
       <Synthesizer />
     </div>

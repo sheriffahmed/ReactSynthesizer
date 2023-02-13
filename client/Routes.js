@@ -6,6 +6,8 @@ import CounterTest from './components/CounterTest';
 import Home from './components/Home';
 import {me} from './store'
 
+// test
+
 /**
  * COMPONENT
  */
